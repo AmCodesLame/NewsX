@@ -10,11 +10,22 @@ class ArticlesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('News')),
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          'X-News',
+          style: TextStyle(fontSize: 40),
+        ),
+        backgroundColor: const Color.fromARGB(255, 26, 26, 26),
+      ),
       body: BlocProvider(
         create: (_) =>
             ArticleBloc(httpClient: http.Client())..add(ArticleFetched()),
-        child: const ArticlesList(),
+        child: Container(
+            padding: EdgeInsets.only(top: 10),
+            decoration:
+                BoxDecoration(color: const Color.fromRGBO(37, 37, 37, 1)),
+            child: const ArticlesList()),
       ),
     );
   }

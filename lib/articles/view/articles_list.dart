@@ -23,6 +23,9 @@ class _ArticlesListState extends State<ArticlesList> {
   Widget build(BuildContext context) {
     return BlocBuilder<ArticleBloc, ArticleState>(
       builder: (context, state) {
+        var width = MediaQuery.of(context).size.width * 0.96;
+
+        var height = MediaQuery.of(context).size.height;
         switch (state.status) {
           case ArticleStatus.failure:
             return const Center(child: Text('failed to fetch articles'));
@@ -34,7 +37,10 @@ class _ArticlesListState extends State<ArticlesList> {
               itemBuilder: (BuildContext context, int index) {
                 return index >= state.articles.length
                     ? const BottomLoader()
-                    : ArticleListItem(article: state.articles[index]);
+                    : ArticleListItem(
+                        article: state.articles[index],
+                        height: height,
+                        width: width);
               },
               itemCount: state.hasReachedMax
                   ? state.articles.length
