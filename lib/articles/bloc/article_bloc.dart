@@ -35,36 +35,36 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     if (state.hasReachedMax) return;
     try {
       if (state.status == ArticleStatus.initial) {
-        // final articles = await _fetchArticles();
-        var response = await http.get(Uri.parse(
-            'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'));
-        List<Article>? newsContent = [];
-        if (response.statusCode == 200) {
-          Map<String, dynamic> result = jsonDecode(response.body);
-          // List<Article>? newsContent = [];
+        // var response = await http.get(Uri.parse(
+        //     'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'));
+        // List<Article>? newsContent = [];
+        // if (response.statusCode == 200) {
+        //   Map<String, dynamic> result = jsonDecode(response.body);
+        //   // List<Article>? newsContent = [];
 
-          Newsdata news = Newsdata.fromJson(result);
-          newsContent = news.articles;
-        }
-        final articles = newsContent;
+        //   Newsdata news = Newsdata.fromJson(result);
+        //   newsContent = news.articles;
+        // }
+        // final articles = newsContent;
+        final articles = await _fetchArticles();
         return emit(state.copyWith(
             status: ArticleStatus.success,
             hasReachedMax: false,
             articles: articles));
       }
 
-      var response = await http.get(Uri.parse(
-          'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'));
-      List<Article>? newsContent = [];
-      if (response.statusCode == 200) {
-        Map<String, dynamic> result = jsonDecode(response.body);
-        // List<Article>? newsContent = [];
+      // var response = await http.get(Uri.parse(
+      //     'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'));
+      // List<Article>? newsContent = [];
+      // if (response.statusCode == 200) {
+      //   Map<String, dynamic> result = jsonDecode(response.body);
+      //   // List<Article>? newsContent = [];
 
-        Newsdata news = Newsdata.fromJson(result);
-        newsContent = news.articles;
-      }
-      final articles = newsContent;
-      // final articles = await _fetchArticles();
+      //   Newsdata news = Newsdata.fromJson(result);
+      //   newsContent = news.articles;
+      // }
+      // final articles = newsContent;
+      final articles = await _fetchArticles();
       emit(articles!.isEmpty
           ? state.copyWith(hasReachedMax: true)
           : state.copyWith(
@@ -78,9 +78,24 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     }
   }
 
-  Future<List<Article>> _fetchArticles([int startIndex = 0]) async {
-    var response = await http.get(Uri.parse(
-        'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'));
+  Future<List<Article>?> _fetchArticles([int startIndex = 0]) {
+    var response = http
+        .get(Uri.parse(
+            'https://newsapi.org/v2/top-headlines?country=us&apiKey=ba130b65aeb5412f8ae7c0714a498535'))
+        .then(
+      (value) {
+        if (value.statusCode == 200) {
+          Map<String, dynamic> result = jsonDecode(value.body);
+          // List<Article>? newsContent = [];
+
+          Newsdata news = Newsdata.fromJson(result);
+          return news.articles;
+        }
+        throw Exception('error fetching Articles');
+      },
+    );
+    return response;
+
     // final response = await httpClient.get(
     //   Uri.https(
     //     'newsapi.org',
@@ -91,27 +106,28 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     //     },
     //   ),
     // );
-    if (response.statusCode == 200) {
-      // Map<String, dynamic> result = jsonDecode(response.body);
-      // List<Article>? newsContent = [];
+    // if (response.statusCode == 200) {
+    //   Map<String, dynamic> result = jsonDecode(response.body);
+    //   // List<Article>? newsContent = [];
 
-      // Newsdata news = Newsdata.fromJson(result);
-      // List<Article>? newsContent = news.articles;
-      // return newsContent;
-      // final body = json.decode(response.body) as Map<String, dynamic>;
-      // final data = body["articles"] as List;
-      // return data.map((dynamic json) {
-      //   final map = json as Map<String, dynamic>;
-      //   return Article(
-      //       author: map['id'],
-      //       title: map['id'],
-      //       description: map['id'],
-      //       url: map['id'],
-      //       urlToImage: map['id'],
-      //       publishedAt: map['id'],
-      //       content: map['id']);
-      // }).toList();
-    }
-    throw Exception('error fetching Articles');
+    //   Newsdata news = Newsdata.fromJson(result);
+
+    //   // List<Article>? newsContent = news.articles;
+    //   return news.articles;
+
+    // final body = json.decode(response.body) as Map<String, dynamic>;
+    // final data = body["articles"] as List;
+    // return data.map((dynamic json) {
+    //   final map = json as Map<String, dynamic>;
+    //   return Article(
+    //       author: map['id'],
+    //       title: map['id'],
+    //       description: map['id'],
+    //       url: map['id'],
+    //       urlToImage: map['id'],
+    //       publishedAt: map['id'],
+    //       content: map['id']);
+    // }).toList();
+    // }
   }
 }
