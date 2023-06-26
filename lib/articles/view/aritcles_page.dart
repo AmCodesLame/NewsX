@@ -18,15 +18,14 @@ class ArticlesPage extends StatelessWidget {
         ),
         backgroundColor: const Color.fromARGB(255, 26, 26, 26),
       ),
-      body: BlocProvider(
-        create: (_) =>
-            ArticleBloc(httpClient: http.Client())..add(ArticleFetched()),
-        child: Container(
-            padding: EdgeInsets.only(top: 10),
-            decoration:
-                BoxDecoration(color: const Color.fromRGBO(37, 37, 37, 1)),
-            child: const ArticlesList()),
-      ),
+      body: Container(
+          padding: EdgeInsets.only(top: 10),
+          decoration: BoxDecoration(color: const Color.fromRGBO(37, 37, 37, 1)),
+          child: BlocProvider(
+            create: (context) =>
+                ArticleBloc(httpClient: http.Client())..add(ArticleFetched()),
+            child: ArticlesList(),
+          )),
     );
   }
 }

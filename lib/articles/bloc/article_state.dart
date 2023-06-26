@@ -7,28 +7,32 @@ final class ArticleState extends Equatable {
       {this.status = ArticleStatus.initial,
       this.articles = const <Article>[],
       this.hasReachedMax = false,
-      this.errorMessage = 'null'});
+      this.errorMessage = 'null',
+      this.downloadState = false});
 
   final ArticleStatus status;
   final List<Article> articles;
   final bool hasReachedMax;
   final String errorMessage;
+  final bool downloadState;
 
   ArticleState copyWith(
       {ArticleStatus? status,
       List<Article>? articles,
       bool? hasReachedMax,
-      String? errorMessage}) {
+      String? errorMessage,
+      bool? downloadState}) {
     return ArticleState(
         status: status ?? this.status,
         articles: articles ?? this.articles,
         hasReachedMax: hasReachedMax ?? this.hasReachedMax,
-        errorMessage: errorMessage ?? this.errorMessage);
+        errorMessage: errorMessage ?? this.errorMessage,
+        downloadState: downloadState ?? this.downloadState);
   }
 
   @override
   String toString() {
-    return '''ArticleState { status: $status, hasReachedMax: $hasReachedMax, articles: ${articles.length}, errorMessage: $errorMessage }''';
+    return '''ArticleState { status: $status, hasReachedMax: $hasReachedMax, articles: ${articles.length}, errorMessage: $errorMessage, downloadState: $downloadState }''';
   }
 
   @override

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:equatable/equatable.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   ArticleBloc({required this.httpClient}) : super(const ArticleState()) {
+    // on<ArticleDownloaded>(_onArticleDownloaded);
     on<ArticleFetched>(
       _onArticleFetched,
       transformer: throttleDroppable(throttleDuration),
@@ -36,6 +38,9 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     try {
       if (state.status == ArticleStatus.initial) {
         final articles = await _fetchArticles();
+        final downloadedArticle = Downloaded()..articles = articles;
+        final box = Hive.box<Downloaded>("create");
+        box.put("saved", downloadedArticle);
         return emit(state.copyWith(
             status: ArticleStatus.success,
             hasReachedMax: false,
@@ -73,4 +78,12 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     );
     return response;
   }
+
+  // void _onArticleDownloaded(
+  //     ArticleDownloaded event, Emitter<ArticleState> emit) {
+  //   return emit(state.copyWith(
+  //       downloadState: true,
+  //       status: ArticleStatus.success,
+  //       errorMessage: "WHY IS THIS NOT WORKING"));
+  // }
 }

@@ -4,6 +4,13 @@ class SimpleBlocObserver extends BlocObserver {
   const SimpleBlocObserver();
 
   @override
+  void onEvent(Bloc<dynamic, dynamic> bloc, Object? event) {
+    super.onEvent(bloc, event);
+    print("this is the event");
+    print(event);
+  }
+
+  @override
   void onTransition(
     Bloc<dynamic, dynamic> bloc,
     Transition<dynamic, dynamic> transition,

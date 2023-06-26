@@ -1,23 +1,25 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_infinite_list/articles/articles.dart';
+import 'package:flutter_infinite_list/articles/bloc/bloc/single_article_bloc.dart';
 
 class ArticleListItem extends StatelessWidget {
   const ArticleListItem(
       {required this.article,
       super.key,
       required this.height,
-      required this.width});
-
+      required this.width,
+      required this.downloadState});
+  final bool downloadState;
   final Article article;
   final double height;
   final double width;
 
   @override
   Widget build(BuildContext context) {
-    // final textTheme = Theme.of(context).textTheme;
-    var title = article.title?.split(" - ");
+    final title = article.title?.split(" - ");
     return GestureDetector(
         child: Container(
           decoration: BoxDecoration(
@@ -91,7 +93,7 @@ class ArticleListItem extends StatelessWidget {
                             fontSize: 12,
                             fontStyle: FontStyle.italic),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -100,10 +102,13 @@ class ArticleListItem extends StatelessWidget {
         ),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: ((context) => SingleArticlePage(
-                    article: article,
-                    height: height,
-                    width: width,
+              builder: ((context) => BlocProvider(
+                    create: (context) => SingleArticleBloc(),
+                    child: SingleArticlePage(
+                      article: article,
+                      height: height,
+                      width: width,
+                    ),
                   ))));
         });
   }
